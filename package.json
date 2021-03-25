@@ -1,0 +1,9 @@
+{
+  "name": "jobscalc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/DouglasVarollo/maratona-discover-2.git",
+  "author": "Douglas Varollo <douglasvarollo@gmail.com>",
+  "license": "MIT",
+  "dependencies": {}
+}
