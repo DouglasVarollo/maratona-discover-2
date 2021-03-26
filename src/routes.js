@@ -1,22 +1,21 @@
 const express = require('express');
 
-const basePath = __dirname + '/views';
 const routes = express.Router();
 
 routes.get('/', function (request, response) {
-  response.sendFile(basePath + '/index.html');
+  response.render('index');
 });
 
 routes.get('/job', function (request, response) {
-  response.sendFile(basePath + '/job.html');
+  response.render('job');
 });
 
 routes.get('/job/edit', function (request, response) {
-  response.sendFile(basePath + '/job-edit.html');
+  response.render('job-edit');
 });
 
 routes.get('/profile', function (request, response) {
-  response.sendFile(basePath + '/profile.html');
+  response.render('profile');
 });
 
 module.exports = routes;
