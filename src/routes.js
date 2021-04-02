@@ -62,7 +62,7 @@ const Job = {
     },
 
     save(request, response) {
-      const lastId = Job.data[Job.data.jobs.length - 1]?.id || 1;
+      const lastId = Job.data[Job.data.length - 1]?.id || 1;
 
       Job.data.push({
         id: lastId + 1,
