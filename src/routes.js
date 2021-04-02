@@ -65,7 +65,7 @@ const Job = {
           ...job,
           remaining,
           status,
-          budget: Profile.data['value-hour'] * job['total-hours']
+          budget: Job.services.calculateBudget(job, Profile.data['value-hour'])
         };
       });
 
@@ -90,9 +90,67 @@ const Job = {
       });
 
       response.redirect('/');
+    },
+
+    show(request, response) {
+      const jobId = request.params.id;
+
+      const job = Job.data.find(function (job) {
+        if (job.id === Number(jobId)) {
+          return job;
+        }
+      });
+
+      if (!job) {
+        return response.send('Job not found');
+      }
+
+      job.budget = Job.services.calculateBudget(
+        job,
+        Profile.data['value-hour']
+      );
+
+      response.render('job-edit', {
+        job
+      });
+    },
+
+    update(request, response) {
+      const jobId = request.params.id;
+
+      const job = Job.data.find(function (job) {
+        if (job.id === Number(jobId)) {
+          return job;
+        }
+      });
+
+      if (!job) {
+        return response.send('Job not found');
+      }
+
+      const updatedJob = {
+        ...job,
+        name: request.body.name,
+        'total-hours': request.body['total-hours'],
+        'daily-hours': request.body['daily-hours']
+      };
+
+      Job.data = Job.data.map(function (job) {
+        if (job.id === Number(jobId)) {
+          job = updatedJob;
+        }
+
+        return job;
+      });
+
+      response.redirect('/job/' + jobId);
     }
   },
   services: {
+    calculateBudget(job, valueHour) {
+      return valueHour * job['total-hours'];
+    },
+
     remainingDays(job) {
       const remainingDays = (job['total-hours'] / job['daily-hours']).toFixed();
       const createdDate = new Date(job.created_at);
@@ -110,10 +168,8 @@ const Job = {
 routes.get('/', Job.controllers.index);
 routes.get('/job', Job.controllers.create);
 routes.post('/job', Job.controllers.save);
-
-routes.get('/job/edit', function (request, response) {
-  response.render('job-edit');
-});
+routes.get('/job/:id', Job.controllers.show);
+routes.post('/job/:id', Job.controllers.update);
 
 routes.get('/profile', Profile.controllers.index);
 routes.post('/profile', Profile.controllers.update);
