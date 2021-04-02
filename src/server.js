@@ -7,6 +7,7 @@ const server = express();
 server.set('view engine', 'ejs');
 server.set('views', 'src/views');
 server.use(express.static('public'));
+server.use(express.urlencoded({ extended: true }));
 server.use(routes);
 
 server.listen(3000, function () {
