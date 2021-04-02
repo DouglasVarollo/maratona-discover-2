@@ -78,8 +78,18 @@ const Job = {
       response.render('job');
     },
 
+    delete(request, response) {
+      const jobId = request.params.id;
+
+      Job.data = Job.data.filter(function (job) {
+        return job.id !== Number(jobId);
+      });
+
+      response.redirect('/');
+    },
+
     save(request, response) {
-      const lastId = Job.data[Job.data.length - 1]?.id || 1;
+      const lastId = Job.data[Job.data.length - 1]?.id || 0;
 
       Job.data.push({
         id: lastId + 1,
@@ -170,6 +180,7 @@ routes.get('/job', Job.controllers.create);
 routes.post('/job', Job.controllers.save);
 routes.get('/job/:id', Job.controllers.show);
 routes.post('/job/:id', Job.controllers.update);
+routes.post('/job/delete/:id', Job.controllers.delete);
 
 routes.get('/profile', Profile.controllers.index);
 routes.post('/profile', Profile.controllers.update);
