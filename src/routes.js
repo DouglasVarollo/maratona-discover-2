@@ -17,6 +17,23 @@ const Profile = {
       response.render('profile', {
         profile: Profile.data
       });
+    },
+
+    update(request, response) {
+      const data = request.body;
+      const weeksPerYear = 52;
+      const weeksPerMonth = (weeksPerYear - data['vacation-per-year']) / 12;
+      const weekTotalHours = data['hours-per-day'] * data['days-per-week'];
+      const monthlyTotalHours = weekTotalHours * weeksPerMonth;
+
+      data['value-hour'] = data['monthly-budget'] / monthlyTotalHours;
+
+      Profile.data = {
+        ...Profile.data,
+        ...data
+      };
+
+      response.redirect('/profile');
     }
   }
 };
@@ -99,5 +116,6 @@ routes.get('/job/edit', function (request, response) {
 });
 
 routes.get('/profile', Profile.controllers.index);
+routes.post('/profile', Profile.controllers.update);
 
 module.exports = routes;
