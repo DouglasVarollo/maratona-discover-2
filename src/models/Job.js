@@ -16,6 +16,10 @@ let data = [
 ];
 
 module.exports = {
+  create(newJob) {
+    data.push(newJob);
+  },
+
   delete(id) {
     data = data.filter(function (job) {
       return job.id !== Number(id);
