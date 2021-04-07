@@ -7,33 +7,29 @@ module.exports = {
     response.render('job');
   },
 
-  delete(request, response) {
+  async delete(request, response) {
     const jobId = request.params.id;
 
-    Job.delete(jobId);
+    await Job.delete(jobId);
 
     response.redirect('/');
   },
 
-  save(request, response) {
-    const jobs = Job.get();
-    const lastId = jobs[jobs.length - 1]?.id || 0;
-
-    Job.create({
-      id: lastId + 1,
+  async save(request, response) {
+    await Job.create({
       name: request.body.name,
-      'daily-hours': request.body['daily-hours'],
-      'total-hours': request.body['total-hours'],
+      'daily-hours': Number(request.body['daily-hours']),
+      'total-hours': Number(request.body['total-hours']),
       created_at: Date.now()
     });
 
     response.redirect('/');
   },
 
-  show(request, response) {
+  async show(request, response) {
     const jobId = request.params.id;
-    const jobs = Job.get();
-    const profile = Profile.get();
+    const jobs = await Job.get();
+    const profile = await Profile.get();
 
     const job = jobs.find(function (job) {
       if (job.id === Number(jobId)) {
@@ -52,36 +48,16 @@ module.exports = {
     });
   },
 
-  update(request, response) {
+  async update(request, response) {
     const jobId = request.params.id;
-    const jobs = Job.get();
-
-    const job = jobs.find(function (job) {
-      if (job.id === Number(jobId)) {
-        return job;
-      }
-    });
-
-    if (!job) {
-      return response.send('Job not found');
-    }
 
     const updatedJob = {
-      ...job,
       name: request.body.name,
-      'total-hours': request.body['total-hours'],
-      'daily-hours': request.body['daily-hours']
+      'total-hours': Number(request.body['total-hours']),
+      'daily-hours': Number(request.body['daily-hours'])
     };
 
-    updatedJobs = jobs.map(function (job) {
-      if (job.id === Number(jobId)) {
-        job = updatedJob;
-      }
-
-      return job;
-    });
-
-    Job.update(updatedJobs);
+    await Job.update(updatedJob, jobId);
 
     response.redirect('/job/' + jobId);
   }
